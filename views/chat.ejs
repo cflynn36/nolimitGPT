@@ -7,137 +7,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   <style>
-    /* Add custom styles here */
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #f7f7f7;
-      color: #333;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 40px auto;
-    }
-
-    .header {
+    .navbar {
+      background-color: #333;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 40px;
+      padding: 0 20px;
     }
-
-    .header h1 {
-      font-weight: 600;
-      font-size: 32px;
-    }
-
-    .header a {
-      color: #333;
-      text-decoration: none;
-    }
-
-    .header a:hover {
-      color: #000;
-    }
-
-    .header span {
-      background-color: #333;
+  
+    .navbar .brand {
       color: #fff;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 14px;
-      display: inline-block;
+      font-size: 20px;
+      text-decoration: none;
       margin-left: 20px;
     }
-
-    .chat-container {
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      overflow-y: auto;
-      height: 500px;
-    }
-
-    .chat-container .message {
-      padding: 20px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-    }
-
-    .chat-container .message p {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .chat-container .message.user-message {
-      background-color: #f7f7f7;
-      align-self: flex-end;
-    }
-
-    .chat-container .message.bot-message {
-      background-color: #333;
+  
+    .navbar .navigation-link {
       color: #fff;
-      align-self: flex-start;
-    }
-
-    .input-container {
-      display: flex;
-      align-items: center;
-      margin-top: 20px;
-    }
-
-    .input-container input {
-      border-radius: 20px;
-      border: 1px solid #ccc;
+      text-decoration: none;
+      margin-right: 20px;
       padding: 10px 20px;
-      font-size: 16px;
-      width: 100%;
-margin-right: 20px;
-}
-.input-container button {
-  background-color: #333;
-  color: #fff;
-  border-radius: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-}
-
-.input-container button:hover {
-  background-color: #000;
-}
-
-
-  .navbar {
-    background-color: #333;
-    padding: 20px;
-  }
-
-  .navbar .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .navbar .brand {
-    color: #fff;
-    font-size: 20px;
-    text-decoration: none;
-    margin-left: 20px;
-  }
-
-  .navbar .navigation-link {
-    color: #fff;
-    text-decoration: none;
-    margin-right: 20px;
-  }
-
-
-</style>
+    }
+  </style>
+  
 </head>
 <body class="body-4">
     <!-- Navigation bar -->
