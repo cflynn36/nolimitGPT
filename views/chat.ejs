@@ -1,158 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        
-  <!-- Specify the character encoding for the document -->
   <meta charset="UTF-8">
-  <!-- Set the viewport to adjust the size of the page to the device screen -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Set the title of the page -->
   <title>Chat with GPT-4</title>
-  <!-- Link the normalize.css stylesheet -->
-  <link href="css/normalize.css" rel="stylesheet" type="text/css">
-  <!-- Link the webflow.css stylesheet -->
-  <link href="css/webflow.css" rel="stylesheet" type="text/css">
-  <!-- Link the nolimitgpt.webflow.css stylesheet -->
-  <link href="css/nolimitgpt.webflow.css" rel="stylesheet" type="text/css">
-</head>
-<body class="body-4">
-  <!-- Navbar with a container to hold the logo and navigation links -->
-  <div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar w-nav">
-    <div class="w-container">
-      <!-- Logo image -->
-      <img src="images/magnifying_glass_logo-removebg-preview.png" loading="eager" width="100" sizes="(max-width: 479px) 42vw, 100px" srcset="images/magnifying_glass_logo-removebg-preview-p-500.png 500w, images/magnifying_glass_logo-removebg-preview.png 500w" alt="" class="image">
-      <!-- Brand name -->
-      <a href="/" class="brand-2 w-nav-brand">nolimitGPT</a>
-      <!-- Navigation menu -->
-      <nav role="navigation" class="navmenu w-nav-menu">
-        <!-- Dashboard link -->
-        <a href="/dashboard" class="hero-button navigationbuttonmain w-nav-link">Dashboard</a>
-      </nav>
-      <!-- Navigation button -->
-      <div class="w-nav-button"></div>
-    </div>
-  </div>
-  <!-- Empty container -->
-  <div class="w-container"></div>
-  <!-- Main container for the chat interface -->
-  <div class="container-3 w-container">
-    <!-- Display the number of credits -->
-    <h2>Credits: <span id="credits-display"><%= user.credits %></span></h2>
-    <!-- Chat container -->
-    <div id="chat-container">
-    </div>
-    <!-- Input container -->
-    <div id="input-container">
-        <!-- User input field -->
-        <input type="text" id="user-input" placeholder="Type your message here...">
-        <!-- Send button -->
-        <button id="send-btn">Send</button>
-    </div>
-  </div>
-
-<script>
-  // Get the chat container, user input field, send button, and credits display elements
-  const chatContainer = document.getElementById('chat-container');
-  const userInput = document.getElementById('user-input');
-  const sendBtn = document.getElementById('send-btn');
-  const creditsDisplay = document.getElementById('credits-display');
-
-  // Function to add a message to the chat container
-  function addMessageToChat(content, role) {
-    // Create a new div element to hold the message
-    const message = document.createElement('div');
-    // Regular expression pattern to match code blocks
-    const codeBlockRegex = /`{3}([\s\S]*?)`{3}/g;
-    // Array of matched code blocks
-    const matchedCodeBlocks = content.match(codeBlockRegex);
-
-    // If there are matched code blocks
-    if (matchedCodeBlocks) {
-      // Loop through each code block
-      matchedCodeBlocks.forEach(block => {
-        // Get the content of the code block
-        const codeContent = block.slice(3, -3).trim();
-        // Wrap the content in a pre element
-        const codeBlock = `<pre>${codeContent}</pre>`;
-        // Replace the code block in the content with the pre element
-        content = content.replace(block, codeBlock);
-      });
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <style>
+    /* Add custom styles here */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      margin: 0;
     }
 
-    // Set the inner HTML of the message div to display the role and message
-    message.innerHTML = `<strong>${role}:</strong> ${content}`;
-    // Set a margin at the bottom of the message
-    message.style.marginBottom = '1rem';
-    // Append the message to the chat container
-    chatContainer.appendChild(message);
-    // Scroll the chat container to the bottom
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-weight: 600;
+      font-size: 32px;
+    }
+
+    .header a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .header a:hover {
+      color: #000;
+    }
+
+    .header span {
+      background-color: #333;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-block;
+      margin-left: 20px;
+    }
+
+    .chat-container {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+      height: 500px;
+    }
+
+    .chat-container .message {
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .chat-container .message p {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .chat-container .message.user-message {
+      background-color: #f7f7f7;
+      align-self: flex-end;
+    }
+
+    .chat-container .message.bot-message {
+      background-color: #333;
+      color: #fff;
+      align-self: flex-start;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .input-container input {
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      padding: 10px 20px;
+      font-size: 16px;
+      width: 100%;
+margin-right: 20px;
+}
+.input-container button {
+  background-color: #333;
+  color: #fff;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.input-container button:hover {
+  background-color: #000;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Chat with GPT-4</h1>
+      <span id="credits-display"><%= user.credits %></span>
+    </div>
+    <div class="chat-container" id="chat-container">
+    </div>
+    <div class="input-container" id="input-container">
+      <input type="text" id="user-input" placeholder="Type your message here...">
+      <button id="send-btn">
+        <i class="fa fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+  <script>
+    // Get the chat container, user input field, send button, and credits display elements
+    const chatContainer = document.getElementById('chat-container');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const creditsDisplay = document.getElementById('credits-display');
+    // Function to add a message to the chat container
+function addMessageToChat(content, role) {
+  // Create a new div element to hold the message
+  const message = document.createElement('div');
+  // Regular expression pattern to match code blocks
+  const codeBlockRegex = /`{3}([\s\S]*?)`{3}/g;
+  // Array of matched code blocks
+  const matchedCodeBlocks = content.match(codeBlockRegex);
+
+  // If there are matched code blocks
+  if (matchedCodeBlocks) {
+    // Loop through each code block
+    matchedCodeBlocks.forEach(block => {
+      // Get the content of the code block
+      const codeContent = block.slice(3, -3).trim();
+      // Wrap the content in a pre element
+      const codeBlock = `<pre>${codeContent}</pre>`;
+      // Replace the code block in the content with the pre element
+      content = content.replace(block, codeBlock);
+    });
   }
 
-  // Asynchronous function to send a message to the server
-  async function sendMessage() {
-    // Get the value of the user input
-    const message = userInput.value.trim();
-    // Return if the input is empty
-    if (message === '') return;
+  // Set the inner HTML of the message div to display the role and message
+  message.innerHTML = `<p>${content}</p>`;
+  // Add a class to the message based on the role
+  message.classList.add(`message-${role.toLowerCase()}`);
+  // Append the message to the chat container
+  chatContainer.appendChild(message);
+  // Scroll the chat container to the bottom
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
-    // Get the number of credits
-    const currentCredits = parseInt(creditsDisplay.textContent, 10);
-    // Check if the user has enough credits
-    if (currentCredits < 1) {
-      // Display an error message
-      alert("You don't have enough credits to send a message.");
-      return;
+// Asynchronous function to send a message to the server
+async function sendMessage() {
+  // Get the value of the user input
+  const message = userInput.value.trim();
+  // Return if the input is empty
+if (message === '') return;
+  // Get the number of credits
+  const currentCredits = parseInt(creditsDisplay.textContent, 10);
+  // Check if the user has enough credits
+  if (currentCredits < 1) {
+    // Display an error message
+    alert("You don't have enough credits to send a message.");
+    return;
+  }
+
+  // Clear the user input field
+  userInput.value = '';
+  // Add the user's message to the chat
+  addMessageToChat(message, 'User');
+  try {
+    // Send a POST request to the server
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message })
+    });
+
+    // If the request is successful
+    if (response.ok) {
+      // Get the response data
+      const { reply, credits } = await response.json();
+      // Update the number of credits
+      creditsDisplay.textContent = credits;
+      // Add the server's reply to the chat
+      addMessageToChat(reply, 'GPT-4');
+    } else {
+      // Log an error if the request fails
+      console.error('Failed to send message');
     }
-
-    // Clear the user input field
-    userInput.value = '';
-    // Add the user's message to the chat
-    addMessageToChat(message, 'User');
-    try {
-      // Send a POST request to the server
-      const response = await fetch('/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message })
-      });
-
-      // If the request is successful
-      if (response.ok) {
-        // Get the response data
-        const { reply, credits } = await response.json();
-        // Update the number of credits
-        creditsDisplay.textContent = credits;
-        // Add the server's reply to the chat
-        addMessageToChat(reply, 'GPT-4');
-      } else {
-        // Log an error if the request fails
-        console.error('Failed to send message');
-}
-} catch (err) {
-// Log an error if there is a problem with the request
-console.error('Error:', err);
-}
+  } catch (err) {
+    // Log an error if there is a problem with the request
+    console.error('Error:', err);
+  }
 }
 
 // Add a click event listener to the send button
 sendBtn.addEventListener('click', sendMessage);
 // Add a keydown event listener to the user input field
 userInput.addEventListener('keydown', event => {
-// If the entered key is the Enter key
-if (event.key === 'Enter') {
-// Prevent the default behavior
-event.preventDefault();
-// Call the sendMessage function
-sendMessage();
-}
+  // If the entered key is the Enter key
+  if (event.key === 'Enter') {
+    // Prevent the default behavior
+    event.preventDefault();
+    // Call the sendMessage function
+    sendMessage();
+  }
 });
 </script>
-<!-- Include the jQuery library -->
-<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=63c98dbc289ca6a67d09744a" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<!-- Include the webflow.js library -->
-<script src="js/webflow.js" type="text/javascript"></script>
 </body>
 </html>
+
