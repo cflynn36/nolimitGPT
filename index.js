@@ -247,33 +247,37 @@ app.post('/webhook', async (req, res) => {
 
   try {
     if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      const userId = session.client_reference_id;
-      const user = await User.findById(userId);
+      // ... existing code ...
+    } else if (event.type === 'customer.subscription.deleted') {
+      const subscriptionId = event.data.object.id;
+      const user = await User.findOne({ subscriptionId });
 
-      // Retrieve the subscription from Stripe
-      const subscriptionId = session.subscription;
-      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-
-      // Get the price ID from the subscription object
-      const priceId = subscription.items.data[0].price.id;
-
-      // Increment credits based on the price ID
-      let creditsToAdd;
-      if (priceId === 'price_1MyxufE98euyK5qLAy68RyR8') {
-        creditsToAdd = 150;
-      } else if (priceId === 'price_1Myxv1E98euyK5qLlpy6rgv4') {
-        creditsToAdd = 500;
-      } else if (priceId === 'price_1MyxttE98euyK5qLy7q0aXcC'){
-        creditsToAdd = 10;
-      } else {
-        creditsToAdd = 0;
+      if (user) {
+        user.subscribed = false;
+        user.subscriptionId = null;
+        await user.save();
       }
+    } else if (event.type === 'invoice.paid') {
+      const subscriptionId = event.data.object.subscription;
+      const user = await User.findOne({ subscriptionId });
 
-      user.credits += creditsToAdd;
-      user.subscribed = true; // Set the subscribed field to true
-	    user.subscriptionId = subscriptionId; // Save the subscription ID
-      await user.save();
+      if (user) {
+        let creditsToAdd;
+        const priceId = event.data.object.lines.data[0].price.id;
+
+        if (priceId === 'price_1MyxufE98euyK5qLAy68RyR8') {
+          creditsToAdd = 150;
+        } else if (priceId === 'price_1Myxv1E98euyK5qLlpy6rgv4') {
+          creditsToAdd = 500;
+        } else if (priceId === 'price_1MyxttE98euyK5qLy7q0aXcC') {
+          creditsToAdd = 10;
+        } else {
+          creditsToAdd = 0;
+        }
+
+        user.credits += creditsToAdd;
+        await user.save();
+      }
     }
 
     res.sendStatus(200);
