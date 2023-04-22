@@ -1,7 +1,6 @@
 # nolimitGPT Web App
 
 [App hosted on HerokuApp](https://rocky-falls-15188.herokuapp.com/)   
-[Github source code](https://github.com/your-username/your-repo)
 
 ## Introduction
 
