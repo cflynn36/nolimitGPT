@@ -35,6 +35,20 @@
           border: none;
           cursor: pointer;
         }
+          /* Add styles for the loading icon */
+  .loading {
+    display: inline-block;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 0.5s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
       </style>
        
   <!-- Specify the character encoding for the document -->
@@ -126,51 +140,60 @@
 
   // Asynchronous function to send a message to the server
   async function sendMessage() {
-    // Get the value of the user input
-    const message = userInput.value.trim();
-    // Return if the input is empty
-    if (message === '') return;
+  // Get the value of the user input
+  const message = userInput.value.trim();
+  // Return if the input is empty
+  if (message === '') return;
 
-    // Get the number of credits
-    const currentCredits = parseInt(creditsDisplay.textContent, 10);
-    // Check if the user has enough credits
-    if (currentCredits < 1) {
-      // Display an error message
-      alert("You don't have enough credits to send a message.");
-      return;
+  // Get the number of credits
+  const currentCredits = parseInt(creditsDisplay.textContent, 10);
+  // Check if the user has enough credits
+  if (currentCredits < 1) {
+    // Display an error message
+    alert("You don't have enough credits to send a message.");
+    return;
+  }
+
+  // Clear the user input field
+  userInput.value = '';
+  // Add the user's message to the chat
+  addMessageToChat(message, 'User');
+
+  // Add a loading icon to the chat
+  const loadingMessage = document.createElement('div');
+  loadingMessage.innerHTML = `<strong>GPT-4:</strong> <span class="loading"></span>`;
+  loadingMessage.style.marginBottom = '1rem';
+  chatContainer.appendChild(loadingMessage);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  try {
+    // Send a POST request to the server
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message })
+    });
+
+    // If the request is successful
+    if (response.ok) {
+      // Get the response data
+      const { reply, credits } = await response.json();
+      // Update the number of credits
+      creditsDisplay.textContent = credits;
+      // Remove the loading icon from the chat
+      loadingMessage.innerHTML = `<strong>GPT-4:</strong> ${reply}`;
+    } else {
+      // Log an error if the request fails
+      console.error('Failed to send message');
     }
+  } catch (err) {
+    // Log an error if there is a problem with the request
+    console.error('Error:', err);
+  }
+}
 
-    // Clear the user input field
-    userInput.value = '';
-    // Add the user's message to the chat
-    addMessageToChat(message, 'User');
-    try {
-      // Send a POST request to the server
-      const response = await fetch('/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message })
-      });
-
-      // If the request is successful
-      if (response.ok) {
-        // Get the response data
-        const { reply, credits } = await response.json();
-        // Update the number of credits
-        creditsDisplay.textContent = credits;
-        // Add the server's reply to the chat
-        addMessageToChat(reply, 'GPT-4');
-      } else {
-        // Log an error if the request fails
-        console.error('Failed to send message');
-}
-} catch (err) {
-// Log an error if there is a problem with the request
-console.error('Error:', err);
-}
-}
 
 // Add a click event listener to the send button
 sendBtn.addEventListener('click', sendMessage);
