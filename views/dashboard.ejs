@@ -11,22 +11,35 @@
   <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body class="body-4">
+  <!-- Navbar -->
   <div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar w-nav">
-    <div class="w-container"><img src="images/magnifying_glass_logo-removebg-preview.png" loading="eager" width="100" sizes="(max-width: 479px) 42vw, 100px" srcset="images/magnifying_glass_logo-removebg-preview-p-500.png 500w, images/magnifying_glass_logo-removebg-preview.png 500w" alt="" class="image">
+    <!-- Navbar container -->
+    <div class="w-container">
+      <!-- Navbar logo -->
+      <img src="images/magnifying_glass_logo-removebg-preview.png" loading="eager" width="100" sizes="(max-width: 479px) 42vw, 100px" srcset="images/magnifying_glass_logo-removebg-preview-p-500.png 500w, images/magnifying_glass_logo-removebg-preview.png 500w" alt="" class="image">
+      <!-- Navbar brand name -->
       <a href="/" class="brand-2 w-nav-brand">nolimitGPT</a>
+      <!-- Navbar navigation menu -->
       <nav role="navigation" class="navmenu w-nav-menu">
+        <!-- Home page link -->
         <a href="/" class="hero-button navigationbuttonmain w-nav-link">Home</a>
       </nav>
+      <!-- Navbar toggle button -->
       <div class="w-nav-button"></div>
     </div>
   </div>
   <div class="w-container"></div>
+  <!-- Main content container -->
   <div class="container-3 w-container">
+    <!-- User email heading -->
     <h1>Welcome, <%= user.email %></h1>
+    <!-- User credits heading -->
     <h2>Your Credits: <%= user.credits %></h2>
-  <% if (!user.subscribed) { %>
-    <div class="w-container">
-      <div class="w-layout-grid pricing-grid">
+    <!-- Check if user is subscribed -->
+    <% if (!user.subscribed) { %>
+      <div class="w-container">
+        <div class="w-layout-grid pricing-grid">
+
         <!-- Trial plan pricing block -->
         <div class="pricing-block">
           <div class="pricing-top-block">
@@ -102,21 +115,28 @@
   <script src="js/webflow.js" type="text/javascript"></script>
   <!-- Add the JavaScript code to handle button clicks and redirect to the Checkout page -->
   <script>
-    // Use the provided Stripe public key
-    const stripe = Stripe('pk_live_51Mg8gOE98euyK5qLDqPosFhDMIjtrVbjaWhoP73FDmP3QLUUgH9nwB3BBuKuUAXBWFr4TW7LDFdthmQug6zdNctQ008lyLlYcl');
-    document.getElementById('subscribe-trial')?.addEventListener('click', () => {
-  createCheckoutSession('price_1MyxttE98euyK5qLy7q0aXcC'); // Use the provided Trial price ID
+// Initialize the Stripe object with the provided public key
+const stripe = Stripe('pk_live_51Mg8gOE98euyK5qLDqPosFhDMIjtrVbjaWhoP73FDmP3QLUUgH9nwB3BBuKuUAXBWFr4TW7LDFdthmQug6zdNctQ008lyLlYcl');
+
+// Add click event listener to the 'subscribe-trial' button to initiate the checkout process for the trial plan
+document.getElementById('subscribe-trial')?.addEventListener('click', () => {
+  createCheckoutSession('price_1MyxttE98euyK5qLy7q0aXcC'); 
 });
+
+// Add click event listener to the 'subscribe-plan-1' button to initiate the checkout process for plan 1
 document.getElementById('subscribe-plan-1')?.addEventListener('click', () => {
-  createCheckoutSession('price_1MyxufE98euyK5qLAy68RyR8'); // Use the provided Plan 1 price ID
+  createCheckoutSession('price_1MyxufE98euyK5qLAy68RyR8'); 
 });
 
+// Add click event listener to the 'subscribe-plan-2' button to initiate the checkout process for plan 2
 document.getElementById('subscribe-plan-2')?.addEventListener('click', () => {
-  createCheckoutSession('price_1Myxv1E98euyK5qLlpy6rgv4'); // Use the provided Plan 2 price ID
+  createCheckoutSession('price_1Myxv1E98euyK5qLlpy6rgv4'); 
 });
 
+// Function to create a checkout session for the provided price ID
 async function createCheckoutSession(priceId) {
   try {
+    // Send a POST request to the server to create the checkout session
     const response = await fetch('/create-checkout-session', {
       method: 'POST',
       headers: {
@@ -126,6 +146,7 @@ async function createCheckoutSession(priceId) {
     });
 
     if (response.ok) {
+      // If the request is successful, redirect the user to the Stripe checkout page
       const session = await response.json();
       await stripe.redirectToCheckout({ sessionId: session.id });
     } else {
@@ -136,11 +157,14 @@ async function createCheckoutSession(priceId) {
   }
 }
 
+// Add click event listener to the 'cancel-subscription' button to cancel the user's subscription
 document.getElementById('cancel-subscription')?.addEventListener('click', async () => {
   try {
+    // Send a POST request to the server to cancel the subscription
     const response = await fetch('/cancel-subscription', { method: 'POST' });
 
     if (response.ok) {
+      // If the request is successful, show an alert and reload the page
       alert('Your subscription has been canceled');
       window.location.reload();
     } else {
@@ -150,6 +174,7 @@ document.getElementById('cancel-subscription')?.addEventListener('click', async 
     console.error('Error:', err);
   }
 });
+
 </script>
 </body>
 </html>    
