@@ -112,22 +112,23 @@ margin-right: 20px;
 }
 </style>
 </head>
-<body>
-    <!-- Navbar with a container to hold the logo and navigation links -->
-<div class="navbar">
-    <div class="container">
-      <!-- Logo image -->
+<body class="body-4">
+    <!-- Navigation bar -->
+  <div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar w-nav">
+    <div class="w-container">
+      <!-- Logo -->
       <img src="images/magnifying_glass_logo-removebg-preview.png" loading="eager" width="100" sizes="(max-width: 479px) 42vw, 100px" srcset="images/magnifying_glass_logo-removebg-preview-p-500.png 500w, images/magnifying_glass_logo-removebg-preview.png 500w" alt="" class="image">
       <!-- Brand name -->
-      <a href="/" class="brand">nolimitGPT</a>
+      <a href="/" class="brand-2 w-nav-brand">nolimitGPT</a>
       <!-- Navigation menu -->
-      <nav class="navmenu">
+      <nav role="navigation" class="navmenu w-nav-menu">
         <!-- Dashboard link -->
-        <a href="/dashboard" class="navigation-link">Dashboard</a>
+        <a href="/dashboard" class="hero-button navigationbuttonmain w-nav-link">Dashboard</a>
       </nav>
+      <!-- Hamburger menu icon -->
+      <div class="w-nav-button"></div>
     </div>
   </div>
-  
   <div class="container">
     <div class="header">
       <h1>Chat with GPT-4</h1>
