@@ -187,8 +187,8 @@ app.post('/create-checkout-session', authenticate, async (req, res) => {
       },
     ],
     mode: 'subscription',
-    success_url: 'https://example.com/success',
-    cancel_url: 'https://example.com/failure',
+    success_url: 'https://rocky-falls-15188.herokuapp.com/dashboard',
+    cancel_url: 'https://rocky-falls-15188.herokuapp.com/dashboard',
     client_reference_id: user._id,
   });
 
