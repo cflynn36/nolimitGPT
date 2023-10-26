@@ -25,6 +25,8 @@
     "passport-google-oauth20": "^2.0.0",
     "stripe": "^11.18.0",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.10"
   }
 }
-

@@ -1,6 +1,6 @@
 # nolimitGPT Web App
 
-[App hosted on HerokuApp](https://rocky-falls-15188.herokuapp.com/)   
+[App hosted on fly.io](https://nolimitgpt.fly.dev/)   
 
 ## Introduction
 
